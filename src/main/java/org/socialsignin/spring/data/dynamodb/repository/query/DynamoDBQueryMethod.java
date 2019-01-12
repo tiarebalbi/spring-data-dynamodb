@@ -38,6 +38,7 @@ public class DynamoDBQueryMethod<T, ID> extends QueryMethod {
 	private final boolean scanEnabledForRepository;
 	private final boolean scanCountEnabledForRepository;
 	private final Optional<String> projectionExpression;
+	private final Optional<Integer> limitResults;
 
 	public DynamoDBQueryMethod(Method method, RepositoryMetadata metadata, ProjectionFactory factory) {
 		super(method, metadata, factory);
@@ -54,8 +55,15 @@ public class DynamoDBQueryMethod<T, ID> extends QueryMethod {
 			} else {
 				this.projectionExpression = Optional.empty();
 			}
+			String limit = query.limit();
+			if (!StringUtils.isEmpty(limit)) {
+				this.limitResults = Optional.of(Integer.parseInt(query.limit()));
+			} else {
+				this.limitResults = Optional.empty();
+			}
 		} else {
 			this.projectionExpression = Optional.empty();
+			this.limitResults = Optional.empty();
 		}
 	}
 
@@ -98,4 +106,7 @@ public class DynamoDBQueryMethod<T, ID> extends QueryMethod {
 		return this.projectionExpression;
 	}
 
+	public Optional<Integer> getLimitResults() {
+		return this.limitResults;
+	}
 }

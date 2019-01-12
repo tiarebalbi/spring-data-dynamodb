@@ -36,4 +36,13 @@ public @interface Query {
 	 *      Expressions</a>
 	 */
 	String fields() default "";
+
+	/**
+	 * A string that must be an integer to limit the number of elements returned.
+	 *
+	 * @see <a href=
+	 *      "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ProjectionExpressions.html">Projection
+	 *      Expressions</a>
+	 */
+	String limit() default "";
 }
