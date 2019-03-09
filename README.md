@@ -31,13 +31,13 @@ please see [spring-data-dynamodb-examples](https://github.com/derjust/spring-dat
 
 ## Quick Start ##
 
-Download the JAR though [Maven Central](http://mvnrepository.com/artifact/com.github.derjust/spring-data-dynamodb) ([`SNAPSHOT` builds](https://oss.sonatype.org/content/repositories/snapshots/com/github/derjust/spring-data-dynamodb/) are available via the [OSSRH snapshot repository](https://stackoverflow.com/a/7717234/25332) ):
+Download the JAR though [Maven Central](http://mvnrepository.com/artifact/com.github.derjust/spring-data-dynamodb) ([`SNAPSHOT` builds](https://oss.sonatype.org/content/repositories/snapshots/com/github/derjust/spring-data-dynamodb/) are available via the [OSSRH snapshot repository](https://github.com/derjust/spring-data-dynamodb/wiki/Access-to-releases) ):
 
 ```xml
 <dependency>
   <groupId>com.github.derjust</groupId>
   <artifactId>spring-data-dynamodb</artifactId>
-  <version>5.0.4</version>
+  <version>5.1.0</version>
 </dependency>
 ```
 
