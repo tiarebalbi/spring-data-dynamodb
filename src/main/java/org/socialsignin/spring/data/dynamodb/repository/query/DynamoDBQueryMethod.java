@@ -28,6 +28,8 @@ import org.springframework.util.StringUtils;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
+import static org.socialsignin.spring.data.dynamodb.repository.QueryConstants.QUERY_LIMIT_UNLIMITED;
+
 /**
  * @author Michael Lavelle
  * @author Sebastian Just
@@ -55,9 +57,9 @@ public class DynamoDBQueryMethod<T, ID> extends QueryMethod {
 			} else {
 				this.projectionExpression = Optional.empty();
 			}
-			String limit = query.limit();
-			if (!StringUtils.isEmpty(limit)) {
-				this.limitResults = Optional.of(Integer.parseInt(query.limit()));
+			int limit = query.limit();
+			if (limit != QUERY_LIMIT_UNLIMITED) {
+				this.limitResults = Optional.of(query.limit());
 			} else {
 				this.limitResults = Optional.empty();
 			}
