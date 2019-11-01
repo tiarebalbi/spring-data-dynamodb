@@ -22,7 +22,7 @@
 	<servers>
 		<server>
 			<id>ossrh</id>
-			<username>zeeman@zeeman.de</username>
+			<username>boostchicken</username>
 			<password>${env.ossrh_password}</password>
 		</server>
 	</servers>
