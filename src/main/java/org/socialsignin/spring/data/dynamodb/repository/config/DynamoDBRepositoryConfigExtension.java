@@ -17,6 +17,7 @@ package org.socialsignin.spring.data.dynamodb.repository.config;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -237,11 +238,14 @@ public class DynamoDBRepositoryConfigExtension extends RepositoryConfigurationEx
 		this.registry = registry;
 
 		this.dynamoDBMapperConfigName = getBeanNameWithModulePrefix("DynamoDBMapperConfig");
-		// TODO only if it doesn't exist
-		BeanDefinitionBuilder dynamoDBMapperConfigBuiilder = BeanDefinitionBuilder
-				.genericBeanDefinition(DynamoDBMapperConfigFactory.class);
-		registry.registerBeanDefinition(this.dynamoDBMapperConfigName,
-				dynamoDBMapperConfigBuiilder.getBeanDefinition());
+		Optional dynamoDBMapperConfigRef = configurationSource.getAttribute("dynamoDBMapperConfigRef");
+
+		if (!dynamoDBMapperConfigRef.isPresent()) {
+			BeanDefinitionBuilder dynamoDBMapperConfigBuiilder = BeanDefinitionBuilder
+					.genericBeanDefinition(DynamoDBMapperConfigFactory.class);
+			registry.registerBeanDefinition(this.dynamoDBMapperConfigName,
+					dynamoDBMapperConfigBuiilder.getBeanDefinition());
+		}
 
 		this.dynamoDBMapperName = getBeanNameWithModulePrefix("DynamoDBMapper");
 		BeanDefinitionBuilder dynamoDBMapperBuilder = BeanDefinitionBuilder
