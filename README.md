@@ -1,8 +1,5 @@
-[![codecov.io](https://codecov.io/github/derjust/spring-data-dynamodb/coverage.svg?branch=master)](https://codecov.io/github/derjust/spring-data-dynamodb?branch=master) [![Build Status](https://travis-ci.org/derjust/spring-data-dynamodb.svg?branch=master)](https://travis-ci.org/derjust/spring-data-dynamodb) 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.derjust/spring-data-dynamodb/badge.svg)](https://search.maven.org/search?q=g:com.github.derjust)
-[![Developer Workspace](https://codenvy.io/factory/resources/codenvy-contribute.svg)](https://codenvy.io/f?user=userrzonfqnofgrmfxjx&amp;name=spring-data-dynamodb)
-[![Donation badge](https://img.shields.io/badge/Donate-%F0%9F%92%B8-DAA520.svg)](DONATION.md)
-
+[![Build Status](https://travis-ci.org/boostchicken/spring-data-dynamodb.svg?branch=master)](https://travis-ci.org/boostchicken/spring-data-dynamodb) 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.boostchicken/spring-data-dynamodb/badge.svg)](https://search.maven.org/search?q=g:com.github.derjust)
 
 
 # Spring  Data DynamoDB #
@@ -35,9 +32,9 @@ Download the JAR though [Maven Central](http://mvnrepository.com/artifact/com.gi
 
 ```xml
 <dependency>
-  <groupId>com.github.derjust</groupId>
+  <groupId>io.github.boostchicken</groupId>
   <artifactId>spring-data-dynamodb</artifactId>
-  <version>5.1.0</version>
+  <version>5.2.0</version>
 </dependency>
 ```
 
@@ -183,6 +180,8 @@ The code base has some history already in it - let's clarify it a bit:
 * The code base was established under [github.com/michaellavelle/spring-data-dynamodb)](https://github.com/michaellavelle/spring-data-dynamodb)
 * It was forked and further maintained under [github.com/derjust/spring-data-dynamodb)](https://github.com/derjust/spring-data-dynamodb) 
     * Available in Maven Central under [`com.github.derjust:spring-data-dynamodb`](http://central.maven.org/maven2/com/github/derjust/spring-data-dynamodb/)
+* It was forked and even further maintained under [github.com/boostchicken/spring-data-dynamodb)](https://github.com/boostchicken/spring-data-dynamodb) 
+    * Available in Maven Central under [`io.github.boostchicken:spring-data-dynamodb`](http://central.maven.org/maven2/io/github/boostchicken/spring-data-dynamodb/)
 
 The Java package name/XSD namespace never changed from `org.socialsignin.spring.data.dynamodb`.
-But the XSD is now also available at [`https://derjust.github.io/spring-data-dynamodb/spring-dynamodb-1.0.xsd`](https://derjust.github.io/spring-data-dynamodb/spring-dynamodb-1.0.xsd).
+But the XSD is now also available at [`https://boostchicken.github.io/spring-data-dynamodb/spring-dynamodb-1.0.xsd`](https://boostchicken.github.io/spring-data-dynamodb/spring-dynamodb-1.0.xsd).
