@@ -15,14 +15,23 @@
  */
 package org.socialsignin.spring.data.dynamodb.repository.config;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.socialsignin.spring.data.dynamodb.core.DynamoDBTemplate;
 import org.socialsignin.spring.data.dynamodb.mapping.DynamoDBMappingContext;
+import org.socialsignin.spring.data.dynamodb.repository.DynamoDBCrudRepository;
+import org.socialsignin.spring.data.dynamodb.repository.DynamoDBPagingAndSortingRepository;
 import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBRepositoryFactoryBean;
 import org.socialsignin.spring.data.dynamodb.repository.util.DynamoDBMappingContextProcessor;
 import org.socialsignin.spring.data.dynamodb.repository.util.Entity2DynamoDBTableSynchronizer;
@@ -62,6 +71,19 @@ public class DynamoDBRepositoryConfigExtension extends RepositoryConfigurationEx
 	@Override
 	public String getRepositoryFactoryBeanClassName() {
 		return DynamoDBRepositoryFactoryBean.class.getName();
+	}
+
+	@Override
+	protected Collection<Class<?>> getIdentifyingTypes() {
+		List<Class<?>> types = new ArrayList<>(2);
+		types.add(DynamoDBPagingAndSortingRepository.class);
+		types.add(DynamoDBCrudRepository.class);
+		return Collections.unmodifiableList(types);
+	}
+
+	@Override
+	protected Collection<Class<? extends Annotation>> getIdentifyingAnnotations() {
+		return Collections.singleton(DynamoDBTable.class);
 	}
 
 	@Override

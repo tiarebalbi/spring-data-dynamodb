@@ -20,7 +20,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.boostchicken</groupId>
     <artifactId>spring-data-dynamodb</artifactId>
-    <version>5.2.0-SNAPSHOT</version>
+    <version>5.2.1-SNAPSHOT</version>
     <name>Spring Data DynamoDB</name>
     <inceptionYear>2018</inceptionYear>
 
@@ -38,7 +38,7 @@
 
     <properties>
         <spring.version>5.2.0.RELEASE</spring.version>
-        <spring-data.version>2.2.0.RELEASE</spring-data.version>
+        <spring-data.version>2.2.2.RELEASE</spring-data.version>
 
         <hibernate-validator.version>6.0.9.Final</hibernate-validator.version>
         <aws-java-sdk.version>1.11.664</aws-java-sdk.version>
@@ -632,6 +632,10 @@
         </profile>
         <profile>
             <id>release</id>
+            <properties>
+                <sqlite4java.artifactId>sqlite4java-win32-x64</sqlite4java.artifactId>
+                <sqlite4java.type>dll</sqlite4java.type>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -663,7 +667,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
+                        <version>1.6</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
