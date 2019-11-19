@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/boostchicken/spring-data-dynamodb.svg?branch=master)](https://travis-ci.org/boostchicken/spring-data-dynamodb) 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.boostchicken/spring-data-dynamodb/badge.svg)](https://search.maven.org/search?q=g:com.github.derjust)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.boostchicken/spring-data-dynamodb/badge.svg)](https://search.maven.org/search?q=g:io.github.boostchicken)
 
 
 # Spring  Data DynamoDB #
@@ -28,13 +28,13 @@ please see [spring-data-dynamodb-examples](https://github.com/derjust/spring-dat
 
 ## Quick Start ##
 
-Download the JAR though [Maven Central](http://mvnrepository.com/artifact/com.github.derjust/spring-data-dynamodb) ([`SNAPSHOT` builds](https://oss.sonatype.org/content/repositories/snapshots/com/github/derjust/spring-data-dynamodb/) are available via the [OSSRH snapshot repository](https://github.com/derjust/spring-data-dynamodb/wiki/Access-to-releases) ):
+Download the JAR though [Maven Central](http://mvnrepository.com/artifact/io.github.boostchicken/spring-data-dynamodb) ([`SNAPSHOT` builds](https://oss.sonatype.org/content/repositories/snapshots/com/github/derjust/spring-data-dynamodb/) are available via the [OSSRH snapshot repository](https://github.com/derjust/spring-data-dynamodb/wiki/Access-to-releases) ):
 
 ```xml
 <dependency>
   <groupId>io.github.boostchicken</groupId>
   <artifactId>spring-data-dynamodb</artifactId>
-  <version>5.2.0</version>
+  <version>5.2.1</version>
 </dependency>
 ```
 
