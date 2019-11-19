@@ -209,7 +209,7 @@
                 <plugin>
                     <groupId>net.revelc.code.formatter</groupId>
                     <artifactId>formatter-maven-plugin</artifactId>
-                    <version>2.7.2</version>
+                    <version>2.11.0</version>
                     <configuration>
                         <lineEnding>LF</lineEnding>
                     </configuration>
@@ -257,39 +257,6 @@
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>3.0.2</version>
-                </plugin>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-                <plugin>
-                	<groupId>org.eclipse.m2e</groupId>
-                	<artifactId>lifecycle-mapping</artifactId>
-                	<version>1.0.0</version>
-                	<configuration>
-                		<lifecycleMappingMetadata>
-                			<pluginExecutions>
-                				<pluginExecution>
-                					<pluginExecutionFilter>
-                						<groupId>
-                							net.revelc.code.formatter
-                						</groupId>
-                						<artifactId>
-                							formatter-maven-plugin
-                						</artifactId>
-                						<versionRange>
-                							[2.7.2,)
-                						</versionRange>
-                						<goals>
-                							<goal>validate</goal>
-                						</goals>
-                					</pluginExecutionFilter>
-                					<action>
-                					<execute>
-                					<runOnIncremental>true</runOnIncremental>
-                					</execute>
-                					</action>
-                				</pluginExecution>
-                			</pluginExecutions>
-                		</lifecycleMappingMetadata>
-                	</configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
