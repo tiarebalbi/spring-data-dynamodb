@@ -17,6 +17,7 @@ package org.socialsignin.spring.data.dynamodb.repository.cdi;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,7 @@ public class DynamoDBRepositoryExtension extends CdiRepositoryExtensionSupport {
 
 	private final Map<Set<Annotation>, Bean<DynamoDBMapperConfig>> dbMapperConfigs = new HashMap<Set<Annotation>, Bean<DynamoDBMapperConfig>>();
 
+	private final Map<Set<Annotation>, Bean<DynamoDBMapper>> dbMapper = new HashMap<>();
 	public DynamoDBRepositoryExtension() {
 		LOGGER.info("Activating CDI extension for Spring Data DynamoDB repositories.");
 	}
@@ -87,6 +89,14 @@ public class DynamoDBRepositoryExtension extends CdiRepositoryExtensionSupport {
 					LOGGER.debug("Discovered '{}' with qualifiers {}.", DynamoDBMapperConfig.class.getName(),
 							qualifiers);
 					dbMapperConfigs.put(qualifiers, (Bean<DynamoDBMapperConfig>) bean);
+				}
+			}
+			if (type instanceof Class<?> && DynamoDBMapper.class.isAssignableFrom((Class<?>) type)) {
+				Set<Annotation> qualifiers = new HashSet<Annotation>(bean.getQualifiers());
+				if (bean.isAlternative() || !dbMapper.containsKey(qualifiers)) {
+					LOGGER.debug("Discovered '{}' with qualifiers {}.", DynamoDBMapper.class.getName(),
+							qualifiers);
+					dbMapper.put(qualifiers, (Bean<DynamoDBMapper>) bean);
 				}
 			}
 		}
@@ -138,16 +148,17 @@ public class DynamoDBRepositoryExtension extends CdiRepositoryExtensionSupport {
 		// qualifiers of the repository.
 		Bean<DynamoDBMapperConfig> dynamoDBMapperConfigBean = dbMapperConfigs.get(qualifiers);
 
+		Bean<DynamoDBOperations> dynamoDBOperationsBean = dynamoDBOperationss.get(qualifiers);
 		if (amazonDynamoDBBean == null) {
 			throw new UnsatisfiedResolutionException(
 					String.format("Unable to resolve a bean for '%s' with qualifiers %s.",
 							AmazonDynamoDBClient.class.getName(), qualifiers));
 		}
 
-		Bean<DynamoDBOperations> dynamoDBOperationsBean = dynamoDBOperationss.get(qualifiers);
+		Bean<DynamoDBMapper> dynamoDBMapperBean = dbMapper.get(qualifiers);
 
 		// Construct and return the repository bean.
 		return new DynamoDBRepositoryBean<T>(beanManager, amazonDynamoDBBean, dynamoDBMapperConfigBean,
-				dynamoDBOperationsBean, qualifiers, repositoryType);
+				dynamoDBOperationsBean, dynamoDBMapperBean, qualifiers, repositoryType);
 	}
 }
