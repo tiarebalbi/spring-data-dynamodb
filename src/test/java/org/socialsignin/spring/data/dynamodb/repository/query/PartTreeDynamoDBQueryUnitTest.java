@@ -35,6 +35,7 @@ import org.socialsignin.spring.data.dynamodb.domain.sample.DynamoDBYearMarshalle
 import org.socialsignin.spring.data.dynamodb.domain.sample.Playlist;
 import org.socialsignin.spring.data.dynamodb.domain.sample.PlaylistId;
 import org.socialsignin.spring.data.dynamodb.domain.sample.User;
+import org.socialsignin.spring.data.dynamodb.repository.QueryConstants;
 import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBEntityInformation;
 import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBIdIsHashAndRangeKeyEntityInformation;
 import org.springframework.data.repository.query.Parameter;
@@ -115,6 +116,7 @@ public class PartTreeDynamoDBQueryUnitTest {
 		Mockito.when(mockPlaylistEntityMetadata.getIndexRangeKeyPropertyNames()).thenReturn(new HashSet<String>());
 		Mockito.when(mockDynamoDBUserQueryMethod.getEntityInformation()).thenReturn(mockUserEntityMetadata);
 		Mockito.when(mockDynamoDBUserQueryMethod.getParameters()).thenReturn(mockParameters);
+		Mockito.when(mockDynamoDBUserQueryMethod.getConsistentReadMode()).thenReturn(QueryConstants.ConsistentReadMode.DEFAULT);
 		Mockito.when(mockDynamoDBPlaylistQueryMethod.getEntityInformation()).thenReturn(mockPlaylistEntityMetadata);
 		Mockito.when(mockDynamoDBPlaylistQueryMethod.getParameters()).thenReturn(mockParameters);
 		Mockito.when(mockUserEntityMetadata.getHashKeyPropertyName()).thenReturn("id");
@@ -142,6 +144,7 @@ public class PartTreeDynamoDBQueryUnitTest {
 		Mockito.when(mockDynamoDBQueryMethod.getEntityType()).thenReturn(clazz);
 		Mockito.when(mockDynamoDBQueryMethod.getName()).thenReturn(repositoryMethodName);
 		Mockito.when(mockDynamoDBQueryMethod.getParameters()).thenReturn(mockParameters);
+		Mockito.when(mockDynamoDBQueryMethod.getConsistentReadMode()).thenReturn(QueryConstants.ConsistentReadMode.DEFAULT);
 		Mockito.when(mockParameters.getBindableParameters()).thenReturn(mockParameters);
 		Mockito.when(mockParameters.getNumberOfParameters()).thenReturn(numberOfParameters);
 		// Mockito.when(mockDynamoDBQueryMethod.getReturnedObjectType()).thenReturn(clazz);

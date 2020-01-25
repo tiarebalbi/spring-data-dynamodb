@@ -15,11 +15,16 @@
  */
 package org.socialsignin.spring.data.dynamodb.repository;
 
-public final class QueryConstants {
+public class QueryConstants {
 
 	private QueryConstants() {
 	}
 
 	public static final int QUERY_LIMIT_UNLIMITED = Integer.MIN_VALUE;
 
+	public enum ConsistentReadMode {
+		DEFAULT,
+		CONSISTENT,
+		EVENTUAL
+	}
 }

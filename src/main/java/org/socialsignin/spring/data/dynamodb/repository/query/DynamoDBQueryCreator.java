@@ -18,6 +18,7 @@ package org.socialsignin.spring.data.dynamodb.repository.query;
 import org.socialsignin.spring.data.dynamodb.core.DynamoDBOperations;
 import org.socialsignin.spring.data.dynamodb.query.Query;
 import org.socialsignin.spring.data.dynamodb.query.StaticQuery;
+import org.socialsignin.spring.data.dynamodb.repository.QueryConstants;
 import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBEntityInformation;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.ParameterAccessor;
@@ -29,9 +30,9 @@ import java.util.Optional;
 public class DynamoDBQueryCreator<T, ID> extends AbstractDynamoDBQueryCreator<T, ID, T> {
 
 	public DynamoDBQueryCreator(PartTree tree, ParameterAccessor parameterAccessor,
-			DynamoDBEntityInformation<T, ID> entityMetadata, Optional<String> projection, Optional<Integer> limit,
+			DynamoDBEntityInformation<T, ID> entityMetadata, Optional<String> projection, Optional<Integer> limit, QueryConstants.ConsistentReadMode consistentReads,
 			DynamoDBOperations dynamoDBOperations) {
-		super(tree, parameterAccessor, entityMetadata, projection, limit, dynamoDBOperations);
+		super(tree, parameterAccessor, entityMetadata, projection, limit, consistentReads, dynamoDBOperations);
 	}
 
 	@Override
@@ -42,6 +43,7 @@ public class DynamoDBQueryCreator<T, ID> extends AbstractDynamoDBQueryCreator<T,
 			criteria.withSort(sort);
 			criteria.withProjection(projection);
 			criteria.withLimit(limit);
+			criteria.withConsistentReads(consistentReads);
 			return criteria.buildQuery(dynamoDBOperations);
 		}
 	}

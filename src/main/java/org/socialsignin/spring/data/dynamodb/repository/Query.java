@@ -20,7 +20,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
+import org.socialsignin.spring.data.dynamodb.repository.QueryConstants.ConsistentReadMode;
 import static org.socialsignin.spring.data.dynamodb.repository.QueryConstants.QUERY_LIMIT_UNLIMITED;
 
 @Retention(RetentionPolicy.RUNTIME)
@@ -47,4 +47,7 @@ public @interface Query {
 	 *      Expressions</a>
 	 */
 	int limit() default QUERY_LIMIT_UNLIMITED;
+
+
+	ConsistentReadMode consistentReads() default ConsistentReadMode.DEFAULT;
 }

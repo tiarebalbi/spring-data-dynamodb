@@ -17,6 +17,7 @@ package org.socialsignin.spring.data.dynamodb.domain.sample;
 
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.socialsignin.spring.data.dynamodb.repository.Query;
+import org.socialsignin.spring.data.dynamodb.repository.QueryConstants;
 import org.springframework.data.repository.CrudRepository;
 
 import java.time.Instant;
@@ -31,6 +32,7 @@ public interface UserRepository extends CrudRepository<User, String> {
 	Iterable<User> findAll();
 
 	// CRUD method using Optional
+	@Query(consistentReads = QueryConstants.ConsistentReadMode.CONSISTENT)
 	Optional<User> findById(String id);
 
 	@EnableScan
