@@ -148,6 +148,17 @@ public @interface EnableDynamoDBRepositories {
 	String dynamoDBMapperConfigRef() default "";
 
 	/**
+	 * Returns the
+	 * {@link com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper }
+	 * reference to be used
+	 *
+	 * @return The
+	 *         {@link com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper}
+	 *         bean name
+	 */
+	String dynamoDBMapperRef() default "";
+
+	/**
 	 * Returns the {@link javax.validation.Validator } reference to be used for to
 	 * validate DynamoDB entities
 	 *
