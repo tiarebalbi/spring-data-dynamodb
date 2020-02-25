@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/boostchicken/spring-data-dynamodb.svg?branch=master)](https://travis-ci.org/boostchicken/spring-data-dynamodb) 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.boostchicken/spring-data-dynamodb/badge.svg)](https://search.maven.org/search?q=g:io.github.boostchicken)
-
+[![Donation badge](https://img.shields.io/badge/Donate-%F0%9F%92%B8-DAA520.svg)](DONATION.md)
 
 # Spring  Data DynamoDB #
 
@@ -28,7 +28,7 @@ please see [spring-data-dynamodb-examples](https://github.com/derjust/spring-dat
 
 ## Quick Start ##
 
-Download the JAR though [Maven Central](http://mvnrepository.com/artifact/io.github.boostchicken/spring-data-dynamodb) ([`SNAPSHOT` builds](https://oss.sonatype.org/content/repositories/snapshots/com/github/derjust/spring-data-dynamodb/) are available via the [OSSRH snapshot repository](https://github.com/derjust/spring-data-dynamodb/wiki/Access-to-releases) ):
+Download the JAR though [Maven Central](http://mvnrepository.com/artifact/io.github.boostchicken/spring-data-dynamodb) ([`SNAPSHOT` builds](https://oss.sonatype.org/content/repositories/snapshots/io/github/boostchicken/spring-data-dynamodb/) are available via the [OSSRH snapshot repository](https://github.com/derjust/spring-data-dynamodb/wiki/Access-to-releases) ):
 
 ```xml
 <dependency>
@@ -167,7 +167,7 @@ API changes will follow SEMVER and loosly the Spring Framework releases.
 | 4.5.x                           | >= 1.4.0 && < 2.0              | >= 4.3 && < 5.0                | Ingalls                   |
 | 5.0.x                           | >= 2.0 && < 2.1                | >= 5.0 && < 5.1                | Kay-SR1                   |
 | 5.1.x                           | == 2.1                         | >= 5.1                         | Lovelace-SR1              |
-| 5.2.x                           | >= 2.2                         | >= 5.2                         | Moore-RELASE              |
+| 5.2.x                           | >= 2.2                         | >= 5.2                         | Moore-RELEASE              |
 
 
 `spring-data-dynamodb` depends directly on `spring-data` as also `spring-context`, `spring-data` and `spring-tx`.
@@ -181,7 +181,7 @@ The code base has some history already in it - let's clarify it a bit:
 * It was forked and further maintained under [github.com/derjust/spring-data-dynamodb)](https://github.com/derjust/spring-data-dynamodb) 
     * Available in Maven Central under [`com.github.derjust:spring-data-dynamodb`](http://central.maven.org/maven2/com/github/derjust/spring-data-dynamodb/)
 * It was forked and even further maintained under [github.com/boostchicken/spring-data-dynamodb)](https://github.com/boostchicken/spring-data-dynamodb) 
-    * Available in Maven Central under [`io.github.boostchicken:spring-data-dynamodb`](http://central.maven.org/maven2/io/github/boostchicken/spring-data-dynamodb/)
+    * Available in Maven Central under [`io.github.boostchicken:spring-data-dynamodb`](https://repo1.maven.org/maven2/io/github/boostchicken/spring-data-dynamodb/)
 
 The Java package name/XSD namespace never changed from `org.socialsignin.spring.data.dynamodb`.
 But the XSD is now also available at [`https://boostchicken.github.io/spring-data-dynamodb/spring-dynamodb-1.0.xsd`](https://boostchicken.github.io/spring-data-dynamodb/spring-dynamodb-1.0.xsd).

@@ -20,22 +20,40 @@
           xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
   <properties>
     <title>spring-data-dynamodb Changes</title>
-    <author email="zeeman@zeeman.de">derjust</author>
+    <author>boostchicken</author>
   </properties>
   <body>
+    <release version="5.2.3" description="Security Release">
+      <action dev="boostchicken" type="fix" issue="10" date="2020-02-24">
+        Update Hibernate Validator to fix CVE
+      </action>
+    </release>
+    <release version="5.2.2" description="Feature Release">
+      <action dev="boostchicken" issue="9" type="add" date="2020-02-24">
+        Add Read Consistency Settings to @Query
+      </action>
+      <action dev="frommeyerc" issue="8" type="fix" date="2020-02-24">
+        Bug fix for @Autowired beans
+      </action>
+    </release>
+    <release version="5.2.1" description="Spring Data 2.2 Support release">
+      <action dev="boostchicken" type="add" date="2019-11-19">
+        Spring Data 2.2 Support
+      </action>
+    </release>
     <release version="5.1.1" description="Maintenance release">
       <action dev="derjust" issue="235" type="fix" date="2019-03-10">
         Upgrading to 5.1.0 results in the error Bean property 'dynamoDBMapperConfig' is not writable or has an invalid setter method
       </action>
-      <action dev="boostschicken" issue="226" type="add" date="2019-03-10">
+      <action dev="boostchicken" issue="226" type="add" date="2019-03-10">
         @Query annotation to support query limiting
       </action>
     </release>
     <release version="5.1.0" date="2019-01-28" description="Spring Boot 2.1 and Spring Data Lovelace-SR1 support">
-      <action dev="boostschicken" type="add" date="2018-10-28">
+      <action dev="boostchicken" type="add" date="2018-10-28">
         Updated all code to work with Spring Boot 2.1 and Lovelace-SR1
       </action>
-      <action dev="boostschicken" type="add" date="2018-10-28">
+      <action dev="boostchicken" type="add" date="2018-10-28">
         Updated Mockito to improve test coverage
       </action>
       <action dev="ryonday" issue="218" type="fix" date="2018-11-09">

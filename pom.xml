@@ -683,6 +683,12 @@
             <email>zeeman@zeeman.de</email>
             <timezone>America/New_York</timezone>
         </developer>
+        <developer>
+            <id>boostchicken</id>
+            <name>John Dorman</name>
+            <url>https://www.github.com/boostchicken</url>
+            <timezone>America/Los_Angeles</timezone>
+        </developer>
     </developers>
     <contributors>
         <contributor>
