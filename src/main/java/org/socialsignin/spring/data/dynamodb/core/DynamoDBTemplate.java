@@ -28,8 +28,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
 import com.amazonaws.services.dynamodbv2.model.QueryRequest;
 import com.amazonaws.services.dynamodbv2.model.QueryResult;
 import com.amazonaws.services.dynamodbv2.model.Select;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.socialsignin.spring.data.dynamodb.mapping.event.AfterDeleteEvent;
 import org.socialsignin.spring.data.dynamodb.mapping.event.AfterLoadEvent;
 import org.socialsignin.spring.data.dynamodb.mapping.event.AfterQueryEvent;
@@ -52,7 +50,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class DynamoDBTemplate implements DynamoDBOperations, ApplicationContextAware {
-	private static final Logger LOGGER = LoggerFactory.getLogger(DynamoDBTemplate.class);
 	private final DynamoDBMapper dynamoDBMapper;
 	private final AmazonDynamoDB amazonDynamoDB;
 	private final DynamoDBMapperConfig dynamoDBMapperConfig;
@@ -71,7 +68,6 @@ public class DynamoDBTemplate implements DynamoDBOperations, ApplicationContextA
 	 *            can be {@code null} -
 	 *            {@link DynamoDBMapper#DynamoDBMapper(AmazonDynamoDB, DynamoDBMapperConfig)}
 	 *            is used if {@code null} is passed in
-	 * @param dynamoDBMapperConfig
 	 */
 	@Autowired
 	public DynamoDBTemplate(AmazonDynamoDB amazonDynamoDB, DynamoDBMapper dynamoDBMapper,

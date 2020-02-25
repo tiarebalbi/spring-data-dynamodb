@@ -36,6 +36,7 @@ public @interface Query {
 	 * @see <a href=
 	 *      "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ProjectionExpressions.html">Projection
 	 *      Expressions</a>
+	 * @return comma-separated list of fields
 	 */
 	String fields() default "";
 
@@ -45,9 +46,18 @@ public @interface Query {
 	 * @see <a href=
 	 *      "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ProjectionExpressions.html">Projection
 	 *      Expressions</a>
+	 * @return number of results to return
 	 */
 	int limit() default QUERY_LIMIT_UNLIMITED;
 
-
+	/**
+	 * Override consistent read mode set in the DynamoDBMapper
+	 *
+	 * @see <a href=
+	 *      "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html">Read Consistency</a>
+	 * @see <a href=
+	 *      "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBMapper.OptionalConfig.html">DynamoDBMapper Configuration</a>
+	 * @return ConistentReadMode to enforce on query
+	 */
 	ConsistentReadMode consistentReads() default ConsistentReadMode.DEFAULT;
 }
