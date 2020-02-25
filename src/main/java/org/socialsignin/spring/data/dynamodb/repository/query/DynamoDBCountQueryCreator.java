@@ -18,6 +18,7 @@ package org.socialsignin.spring.data.dynamodb.repository.query;
 import org.socialsignin.spring.data.dynamodb.core.DynamoDBOperations;
 import org.socialsignin.spring.data.dynamodb.query.Query;
 import org.socialsignin.spring.data.dynamodb.query.StaticQuery;
+import org.socialsignin.spring.data.dynamodb.repository.QueryConstants;
 import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBEntityInformation;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.ParameterAccessor;
@@ -32,13 +33,13 @@ public class DynamoDBCountQueryCreator<T, ID> extends AbstractDynamoDBQueryCreat
 
 	public DynamoDBCountQueryCreator(PartTree tree, DynamoDBEntityInformation<T, ID> entityMetadata,
 			DynamoDBOperations dynamoDBOperations, boolean pageQuery) {
-		super(tree, entityMetadata, Optional.empty(), Optional.empty(), dynamoDBOperations);
+		super(tree, entityMetadata, Optional.empty(), Optional.empty(), QueryConstants.ConsistentReadMode.DEFAULT, dynamoDBOperations);
 		this.pageQuery = pageQuery;
 	}
 
 	public DynamoDBCountQueryCreator(PartTree tree, ParameterAccessor parameterAccessor,
 			DynamoDBEntityInformation<T, ID> entityMetadata, DynamoDBOperations dynamoDBOperations, boolean pageQuery) {
-		super(tree, parameterAccessor, entityMetadata, Optional.empty(), Optional.empty(), dynamoDBOperations);
+		super(tree, parameterAccessor, entityMetadata, Optional.empty(), Optional.empty(), QueryConstants.ConsistentReadMode.DEFAULT, dynamoDBOperations);
 		this.pageQuery = pageQuery;
 
 	}

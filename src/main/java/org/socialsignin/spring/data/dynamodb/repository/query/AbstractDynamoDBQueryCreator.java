@@ -19,6 +19,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperTableModel;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import org.socialsignin.spring.data.dynamodb.core.DynamoDBOperations;
 import org.socialsignin.spring.data.dynamodb.query.Query;
+import org.socialsignin.spring.data.dynamodb.repository.QueryConstants;
 import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBEntityInformation;
 import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBIdIsHashAndRangeKeyEntityInformation;
 import org.springframework.data.mapping.PropertyPath;
@@ -47,23 +48,26 @@ public abstract class AbstractDynamoDBQueryCreator<T, ID, R>
 	protected final DynamoDBOperations dynamoDBOperations;
 	protected final Optional<String> projection;
 	protected final Optional<Integer> limit;
+	protected final QueryConstants.ConsistentReadMode consistentReads;
 
 	public AbstractDynamoDBQueryCreator(PartTree tree, DynamoDBEntityInformation<T, ID> entityMetadata,
-			Optional<String> projection, Optional<Integer> limitResults, DynamoDBOperations dynamoDBOperations) {
+			Optional<String> projection, Optional<Integer> limitResults, QueryConstants.ConsistentReadMode consistentReads, DynamoDBOperations dynamoDBOperations) {
 		super(tree);
 		this.entityMetadata = entityMetadata;
 		this.projection = projection;
 		this.limit = limitResults;
+		this.consistentReads = consistentReads;
 		this.dynamoDBOperations = dynamoDBOperations;
 	}
 
 	public AbstractDynamoDBQueryCreator(PartTree tree, ParameterAccessor parameterAccessor,
-			DynamoDBEntityInformation<T, ID> entityMetadata, Optional<String> projection,
-			Optional<Integer> limitResults, DynamoDBOperations dynamoDBOperations) {
+										DynamoDBEntityInformation<T, ID> entityMetadata, Optional<String> projection,
+										Optional<Integer> limitResults, QueryConstants.ConsistentReadMode consistentReads, DynamoDBOperations dynamoDBOperations) {
 		super(tree, parameterAccessor);
 		this.entityMetadata = entityMetadata;
 		this.projection = projection;
 		this.limit = limitResults;
+		this.consistentReads = consistentReads;
 		this.dynamoDBOperations = dynamoDBOperations;
 	}
 

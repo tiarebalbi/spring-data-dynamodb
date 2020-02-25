@@ -39,7 +39,7 @@ public class PartTreeDynamoDBQuery<T, ID> extends AbstractDynamoDBQuery<T, ID> i
 
 	protected DynamoDBQueryCreator<T, ID> createQueryCreator(ParametersParameterAccessor accessor) {
 		return new DynamoDBQueryCreator<>(tree, accessor, getQueryMethod().getEntityInformation(),
-				getQueryMethod().getProjectionExpression(), getQueryMethod().getLimitResults(), dynamoDBOperations);
+				getQueryMethod().getProjectionExpression(), getQueryMethod().getLimitResults(), getQueryMethod().getConsistentReadMode(), dynamoDBOperations);
 	}
 
 	protected DynamoDBCountQueryCreator<T, ID> createCountQueryCreator(ParametersParameterAccessor accessor,

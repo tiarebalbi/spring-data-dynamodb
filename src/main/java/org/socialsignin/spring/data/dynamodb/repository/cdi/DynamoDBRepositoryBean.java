@@ -46,6 +46,8 @@ class DynamoDBRepositoryBean<T> extends CdiRepositoryBean<T> {
 
 	private final Bean<DynamoDBOperations> dynamoDBOperationsBean;
 
+	private final Bean<DynamoDBMapper> dynamoDBMapperBean;
+
 	/**
 	 * Constructs a {@link DynamoDBRepositoryBean}.
 	 * 
@@ -62,7 +64,7 @@ class DynamoDBRepositoryBean<T> extends CdiRepositoryBean<T> {
 	 */
 	DynamoDBRepositoryBean(BeanManager beanManager, Bean<AmazonDynamoDB> amazonDynamoDBBean,
 			Bean<DynamoDBMapperConfig> dynamoDBMapperConfigBean, Bean<DynamoDBOperations> dynamoDBOperationsBean,
-			Set<Annotation> qualifiers, Class<T> repositoryType) {
+						   Bean<DynamoDBMapper> dynamoDBMapperBean, Set<Annotation> qualifiers, Class<T> repositoryType) {
 
 		super(qualifiers, repositoryType, beanManager);
 		if (dynamoDBOperationsBean == null) {
@@ -77,6 +79,7 @@ class DynamoDBRepositoryBean<T> extends CdiRepositoryBean<T> {
 		this.amazonDynamoDBBean = amazonDynamoDBBean;
 		this.dynamoDBMapperConfigBean = dynamoDBMapperConfigBean;
 		this.dynamoDBOperationsBean = dynamoDBOperationsBean;
+		this.dynamoDBMapperBean = dynamoDBMapperBean;
 	}
 
 	/*
@@ -97,6 +100,10 @@ class DynamoDBRepositoryBean<T> extends CdiRepositoryBean<T> {
 				? null
 				: getDependencyInstance(dynamoDBMapperConfigBean, DynamoDBMapperConfig.class);
 
+		DynamoDBMapper dynamoDBMapper = dynamoDBMapperBean == null
+				? null
+				: getDependencyInstance(dynamoDBMapperBean, DynamoDBMapper.class);
+
 		DynamoDBOperations dynamoDBOperations = dynamoDBOperationsBean == null
 				? null
 				: getDependencyInstance(dynamoDBOperationsBean, DynamoDBOperations.class);
@@ -104,8 +111,9 @@ class DynamoDBRepositoryBean<T> extends CdiRepositoryBean<T> {
 		if (dynamoDBMapperConfig == null) {
 			dynamoDBMapperConfig = DynamoDBMapperConfig.DEFAULT;
 		}
-		DynamoDBMapper dynamoDBMapper = new DynamoDBMapper(amazonDynamoDB, dynamoDBMapperConfig);
-
+		if(dynamoDBMapper == null) {
+			dynamoDBMapper = new DynamoDBMapper(amazonDynamoDB, dynamoDBMapperConfig);
+		}
 		if (dynamoDBOperations == null) {
 			dynamoDBOperations = new DynamoDBTemplate(amazonDynamoDB, dynamoDBMapper, dynamoDBMapperConfig);
 		}

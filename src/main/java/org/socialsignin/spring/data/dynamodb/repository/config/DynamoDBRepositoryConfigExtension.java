@@ -260,7 +260,7 @@ public class DynamoDBRepositoryConfigExtension extends RepositoryConfigurationEx
 		this.registry = registry;
 
 		this.dynamoDBMapperConfigName = getBeanNameWithModulePrefix("DynamoDBMapperConfig");
-		Optional dynamoDBMapperConfigRef = configurationSource.getAttribute("dynamoDBMapperConfigRef");
+		Optional<String> dynamoDBMapperConfigRef = configurationSource.getAttribute("dynamoDBMapperConfigRef");
 
 		if (!dynamoDBMapperConfigRef.isPresent()) {
 			BeanDefinitionBuilder dynamoDBMapperConfigBuiilder = BeanDefinitionBuilder
@@ -269,10 +269,13 @@ public class DynamoDBRepositoryConfigExtension extends RepositoryConfigurationEx
 					dynamoDBMapperConfigBuiilder.getBeanDefinition());
 		}
 
-		this.dynamoDBMapperName = getBeanNameWithModulePrefix("DynamoDBMapper");
-		BeanDefinitionBuilder dynamoDBMapperBuilder = BeanDefinitionBuilder
-				.genericBeanDefinition(DynamoDBMapperFactory.class);
-		registry.registerBeanDefinition(this.dynamoDBMapperName, dynamoDBMapperBuilder.getBeanDefinition());
+		Optional<String> dynamoDBMapperRef = configurationSource.getAttribute("dynamoDBMapperRef");
+		if(!dynamoDBMapperRef.isPresent()) {
+			this.dynamoDBMapperName = getBeanNameWithModulePrefix("DynamoDBMapper");
+			BeanDefinitionBuilder dynamoDBMapperBuilder = BeanDefinitionBuilder
+					.genericBeanDefinition(DynamoDBMapperFactory.class);
+			registry.registerBeanDefinition(this.dynamoDBMapperName, dynamoDBMapperBuilder.getBeanDefinition());
+		}
 	}
 
 	protected String getBeanNameWithModulePrefix(String baseBeanName) {

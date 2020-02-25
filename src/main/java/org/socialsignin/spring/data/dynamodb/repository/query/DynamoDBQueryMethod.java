@@ -18,6 +18,7 @@ package org.socialsignin.spring.data.dynamodb.repository.query;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScanCount;
 import org.socialsignin.spring.data.dynamodb.repository.Query;
+import org.socialsignin.spring.data.dynamodb.repository.QueryConstants;
 import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBEntityInformation;
 import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBEntityMetadataSupport;
 import org.springframework.data.projection.ProjectionFactory;
@@ -41,6 +42,7 @@ public class DynamoDBQueryMethod<T, ID> extends QueryMethod {
 	private final boolean scanCountEnabledForRepository;
 	private final Optional<String> projectionExpression;
 	private final Optional<Integer> limitResults;
+	private QueryConstants.ConsistentReadMode consistentReadMode;
 
 	public DynamoDBQueryMethod(Method method, RepositoryMetadata metadata, ProjectionFactory factory) {
 		super(method, metadata, factory);
@@ -63,9 +65,11 @@ public class DynamoDBQueryMethod<T, ID> extends QueryMethod {
 			} else {
 				this.limitResults = Optional.empty();
 			}
+			this.consistentReadMode = query.consistentReads();
 		} else {
 			this.projectionExpression = Optional.empty();
 			this.limitResults = Optional.empty();
+			this.consistentReadMode = QueryConstants.ConsistentReadMode.DEFAULT;
 		}
 	}
 
@@ -110,5 +114,9 @@ public class DynamoDBQueryMethod<T, ID> extends QueryMethod {
 
 	public Optional<Integer> getLimitResults() {
 		return this.limitResults;
+	}
+
+	public QueryConstants.ConsistentReadMode getConsistentReadMode() {
+		return this.consistentReadMode;
 	}
 }

@@ -29,6 +29,7 @@ import org.socialsignin.spring.data.dynamodb.core.DynamoDBOperations;
 import org.socialsignin.spring.data.dynamodb.marshaller.Date2IsoDynamoDBMarshaller;
 import org.socialsignin.spring.data.dynamodb.marshaller.Instant2IsoDynamoDBMarshaller;
 import org.socialsignin.spring.data.dynamodb.query.Query;
+import org.socialsignin.spring.data.dynamodb.repository.QueryConstants;
 import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBEntityInformation;
 import org.socialsignin.spring.data.dynamodb.utils.SortHandler;
 import org.springframework.data.domain.Sort;
@@ -73,6 +74,7 @@ public abstract class AbstractDynamoDBQueryCriteria<T, ID> implements DynamoDBQu
 	protected Sort sort = Sort.unsorted();
 	protected Optional<String> projection = Optional.empty();
 	protected Optional<Integer> limit = Optional.empty();
+	protected QueryConstants.ConsistentReadMode consistentReads = QueryConstants.ConsistentReadMode.DEFAULT;
 
 	public abstract boolean isApplicableForLoad();
 
@@ -134,6 +136,17 @@ public abstract class AbstractDynamoDBQueryCriteria<T, ID> implements DynamoDBQu
 			}
 
 			limit.ifPresent(queryRequest::setLimit);
+
+			switch (consistentReads) {
+				case CONSISTENT:
+					queryRequest.setConsistentRead(true);
+					break;
+				case EVENTUAL:
+					queryRequest.setConsistentRead(false);
+					break;
+				default:
+					break;
+			}
 			applySortIfSpecified(queryRequest, new ArrayList<>(new HashSet<>(allowedSortProperties)));
 		}
 		return queryRequest;
@@ -701,6 +714,12 @@ public abstract class AbstractDynamoDBQueryCriteria<T, ID> implements DynamoDBQu
 	@Override
 	public DynamoDBQueryCriteria<T, ID> withLimit(Optional<Integer> limit) {
 		this.limit = limit;
+		return this;
+	}
+
+	@Override
+	public DynamoDBQueryCriteria<T, ID> withConsistentReads(QueryConstants.ConsistentReadMode consistentReads) {
+		this.consistentReads = consistentReads;
 		return this;
 	}
 }
