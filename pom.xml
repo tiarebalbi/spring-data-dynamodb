@@ -297,6 +297,7 @@
                     </properties>
                     <excludes>
                         <exclude>**/README.md</exclude>
+                        <exclude>**/FUNDING.yml</exclude>
                         <exclude>**/DONATION.md</exclude>
                         <exclude>**/CONTRIBUTING.md</exclude>
                         <exclude>**/LICENSE</exclude>
@@ -608,7 +609,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.0.0</version>
+                        <version>3.1.1</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -791,7 +792,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.1</version>
                 <reportSets>
                     <reportSet>
                         <id>default</id>
@@ -805,7 +806,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <configuration>
-                    <configLocation>checkstyle.xml</configLocation>
+                    <configLocation>src/checkstyle.xml</configLocation>
                 </configuration>
             </plugin>
             <plugin>
