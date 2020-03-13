@@ -46,10 +46,10 @@ import com.amazonaws.services.dynamodbv2.util.TableUtils.TableNeverTransitionedT
 /**
  * This is the base class for all classes performing the validation or
  * auto-creation of tables based on the entity classes.
- * 
+ *
  * //TODO: It would be nice if the checks would run in parallel via a
  * TaskScheduler (if available)
- * 
+ *
  * @see Entity2DDL
  */
 public class Entity2DynamoDBTableSynchronizer<T, ID> extends EntityInformationProxyPostProcessor<T, ID>
@@ -60,6 +60,7 @@ public class Entity2DynamoDBTableSynchronizer<T, ID> extends EntityInformationPr
 
 	private static final String CONFIGURATION_KEY_entity2ddl_auto = "${spring.data.dynamodb.entity2ddl.auto:none}";
 	private static final String CONFIGURATION_KEY_entity2ddl_gsiProjectionType = "${spring.data.dynamodb.entity2ddl.gsiProjectionType:ALL}";
+	private static final String CONFIGURATION_KEY_entity2ddl_lsiProjectionType = "${spring.data.dynamodb.entity2ddl.lsiProjectionType:ALL}";
 	private static final String CONFIGURATION_KEY_entity2ddl_readCapacity = "${spring.data.dynamodb.entity2ddl.readCapacity:10}";
 	private static final String CONFIGURATION_KEY_entity2ddl_writeCapacity = "${spring.data.dynamodb.entity2ddl.writeCapacity:1}";
 
@@ -68,18 +69,20 @@ public class Entity2DynamoDBTableSynchronizer<T, ID> extends EntityInformationPr
 
 	private final Entity2DDL mode;
 	private final ProjectionType gsiProjectionType;
+	private final ProjectionType lsiProjectionType;
 	private final ProvisionedThroughput pt;
 
 	private final Collection<DynamoDBEntityInformation<T, ID>> registeredEntities = new ArrayList<>();
 
 	public Entity2DynamoDBTableSynchronizer(AmazonDynamoDB amazonDynamoDB, DynamoDBMapper mapper, Entity2DDL mode) {
-		this(amazonDynamoDB, mapper, mode.getConfigurationValue(), ProjectionType.ALL.name(), 10L, 10L);
+		this(amazonDynamoDB, mapper, mode.getConfigurationValue(), ProjectionType.ALL.name(), ProjectionType.ALL.name(), 10L, 10L);
 	}
 
 	@Autowired
 	public Entity2DynamoDBTableSynchronizer(AmazonDynamoDB amazonDynamoDB, DynamoDBMapper mapper,
 			@Value(CONFIGURATION_KEY_entity2ddl_auto) String mode,
 			@Value(CONFIGURATION_KEY_entity2ddl_gsiProjectionType) String gsiProjectionType,
+			@Value(CONFIGURATION_KEY_entity2ddl_lsiProjectionType) String lsiProjectionType,
 			@Value(CONFIGURATION_KEY_entity2ddl_readCapacity) long readCapacity,
 			@Value(CONFIGURATION_KEY_entity2ddl_writeCapacity) long writeCapacity) {
 		this.amazonDynamoDB = amazonDynamoDB;
@@ -88,6 +91,7 @@ public class Entity2DynamoDBTableSynchronizer<T, ID> extends EntityInformationPr
 		this.mode = Entity2DDL.fromValue(mode);
 		this.pt = new ProvisionedThroughput(readCapacity, writeCapacity);
 		this.gsiProjectionType = ProjectionType.fromValue(gsiProjectionType);
+		this.lsiProjectionType = ProjectionType.fromValue(lsiProjectionType);
 	}
 
 	@Override
@@ -167,6 +171,11 @@ public class Entity2DynamoDBTableSynchronizer<T, ID> extends EntityInformationPr
 				gsi.setProjection(new Projection().withProjectionType(gsiProjectionType));
 				gsi.setProvisionedThroughput(pt);
 			});
+		}
+
+		if(ctr.getLocalSecondaryIndexes() != null) {
+			ctr.getLocalSecondaryIndexes().forEach(lsi ->
+				lsi.setProjection(new Projection().withProjectionType(lsiProjectionType)));
 		}
 
 		boolean result = TableUtils.createTableIfNotExists(amazonDynamoDB, ctr);
