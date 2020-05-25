@@ -30,6 +30,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
@@ -57,6 +58,7 @@ public class CustomerHistoryTest {
 
 		CustomerHistory actual = customerHistoryRepository.findByTag(expected.getTag());
 
+		assertNotNull(actual);
 		assertEquals(expected.getId(), actual.getId());
 		assertEquals(expected.getCreateDt(), actual.getCreateDt());
 		assertEquals(expected.getTag(), actual.getTag());

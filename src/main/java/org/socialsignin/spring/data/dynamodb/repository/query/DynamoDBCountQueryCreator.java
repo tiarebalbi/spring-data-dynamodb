@@ -18,6 +18,7 @@ package org.socialsignin.spring.data.dynamodb.repository.query;
 import org.socialsignin.spring.data.dynamodb.core.DynamoDBOperations;
 import org.socialsignin.spring.data.dynamodb.query.Query;
 import org.socialsignin.spring.data.dynamodb.query.StaticQuery;
+import org.socialsignin.spring.data.dynamodb.repository.ExpressionAttribute;
 import org.socialsignin.spring.data.dynamodb.repository.QueryConstants;
 import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBEntityInformation;
 import org.springframework.data.domain.Sort;
@@ -31,15 +32,25 @@ public class DynamoDBCountQueryCreator<T, ID> extends AbstractDynamoDBQueryCreat
 
 	private boolean pageQuery;
 
+	/**
+	 *
+	 * @deprecated use the new constructor with all required fields, will be removed in 5.3.0
+	 */
+	@Deprecated
 	public DynamoDBCountQueryCreator(PartTree tree, DynamoDBEntityInformation<T, ID> entityMetadata,
 			DynamoDBOperations dynamoDBOperations, boolean pageQuery) {
-		super(tree, entityMetadata, Optional.empty(), Optional.empty(), QueryConstants.ConsistentReadMode.DEFAULT, dynamoDBOperations);
+		super(tree, entityMetadata, Optional.empty(), Optional.empty(),
+				QueryConstants.ConsistentReadMode.DEFAULT, Optional.empty(), null, null, dynamoDBOperations);
 		this.pageQuery = pageQuery;
 	}
 
 	public DynamoDBCountQueryCreator(PartTree tree, ParameterAccessor parameterAccessor,
-			DynamoDBEntityInformation<T, ID> entityMetadata, DynamoDBOperations dynamoDBOperations, boolean pageQuery) {
-		super(tree, parameterAccessor, entityMetadata, Optional.empty(), Optional.empty(), QueryConstants.ConsistentReadMode.DEFAULT, dynamoDBOperations);
+									 DynamoDBEntityInformation<T, ID> entityMetadata, Optional<String> filterExpression,
+									 ExpressionAttribute[] names, ExpressionAttribute[] values, DynamoDBOperations dynamoDBOperations,
+									 boolean pageQuery) {
+
+		super(tree, parameterAccessor, entityMetadata, Optional.empty(), Optional.empty(),
+				QueryConstants.ConsistentReadMode.DEFAULT,  filterExpression, names, values, dynamoDBOperations);
 		this.pageQuery = pageQuery;
 
 	}
@@ -49,6 +60,10 @@ public class DynamoDBCountQueryCreator<T, ID> extends AbstractDynamoDBQueryCreat
 		if (criteria == null) {
 			return new StaticQuery<>(1L);
 		} else {
+			criteria.withFilterExpression(filterExpression);
+			criteria.withExpressionAttributeNames(expressionAttributeNames);
+			criteria.withExpressionAttributeValues(expressionAttributeValues);
+			criteria.withMappedExpressionValues(mappedExpressionValues);
 			return criteria.buildCountQuery(dynamoDBOperations, pageQuery);
 		}
 	}

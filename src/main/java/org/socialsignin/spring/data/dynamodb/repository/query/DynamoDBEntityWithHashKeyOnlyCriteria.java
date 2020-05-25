@@ -40,7 +40,7 @@ import java.util.Map;
  */
 public class DynamoDBEntityWithHashKeyOnlyCriteria<T, ID> extends AbstractDynamoDBQueryCriteria<T, ID> {
 
-	private DynamoDBEntityInformation<T, ID> entityInformation;
+	private final DynamoDBEntityInformation<T, ID> entityInformation;
 
 	public DynamoDBEntityWithHashKeyOnlyCriteria(DynamoDBEntityInformation<T, ID> entityInformation,
 			DynamoDBMapperTableModel<T> tableModel) {

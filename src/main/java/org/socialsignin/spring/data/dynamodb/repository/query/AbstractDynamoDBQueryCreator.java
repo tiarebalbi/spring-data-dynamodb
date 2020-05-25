@@ -19,11 +19,14 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperTableModel;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import org.socialsignin.spring.data.dynamodb.core.DynamoDBOperations;
 import org.socialsignin.spring.data.dynamodb.query.Query;
+import org.socialsignin.spring.data.dynamodb.repository.ExpressionAttribute;
 import org.socialsignin.spring.data.dynamodb.repository.QueryConstants;
 import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBEntityInformation;
 import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBIdIsHashAndRangeKeyEntityInformation;
 import org.springframework.data.mapping.PropertyPath;
+import org.springframework.data.repository.query.Parameter;
 import org.springframework.data.repository.query.ParameterAccessor;
+import org.springframework.data.repository.query.ParametersParameterAccessor;
 import org.springframework.data.repository.query.parser.AbstractQueryCreator;
 import org.springframework.data.repository.query.parser.Part;
 import org.springframework.data.repository.query.parser.Part.IgnoreCaseType;
@@ -31,9 +34,12 @@ import org.springframework.data.repository.query.parser.PartTree;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -48,26 +54,62 @@ public abstract class AbstractDynamoDBQueryCreator<T, ID, R>
 	protected final DynamoDBOperations dynamoDBOperations;
 	protected final Optional<String> projection;
 	protected final Optional<Integer> limit;
+	protected final Optional<String> filterExpression;
+	protected final ExpressionAttribute[] expressionAttributeNames;
+	protected final ExpressionAttribute[] expressionAttributeValues;
+	protected final Map<String, String> mappedExpressionValues = new HashMap<>();
 	protected final QueryConstants.ConsistentReadMode consistentReads;
 
 	public AbstractDynamoDBQueryCreator(PartTree tree, DynamoDBEntityInformation<T, ID> entityMetadata,
-			Optional<String> projection, Optional<Integer> limitResults, QueryConstants.ConsistentReadMode consistentReads, DynamoDBOperations dynamoDBOperations) {
+										Optional<String> projection, Optional<Integer> limitResults, QueryConstants.ConsistentReadMode consistentReads,
+										Optional<String> filterExpression, ExpressionAttribute[] names, ExpressionAttribute[] values, DynamoDBOperations dynamoDBOperations) {
 		super(tree);
 		this.entityMetadata = entityMetadata;
 		this.projection = projection;
 		this.limit = limitResults;
 		this.consistentReads = consistentReads;
+		this.filterExpression = filterExpression;
+		if(names != null) {
+			this.expressionAttributeNames = names.clone();
+		} else{
+			this.expressionAttributeNames = null;
+		}
+		if(values != null) {
+			this.expressionAttributeValues = values.clone();
+		} else{
+			this.expressionAttributeValues = null;
+		}
 		this.dynamoDBOperations = dynamoDBOperations;
 	}
 
 	public AbstractDynamoDBQueryCreator(PartTree tree, ParameterAccessor parameterAccessor,
 										DynamoDBEntityInformation<T, ID> entityMetadata, Optional<String> projection,
-										Optional<Integer> limitResults, QueryConstants.ConsistentReadMode consistentReads, DynamoDBOperations dynamoDBOperations) {
+										Optional<Integer> limitResults, QueryConstants.ConsistentReadMode consistentReads, Optional<String> filterExpression, ExpressionAttribute[] names, ExpressionAttribute[] values, DynamoDBOperations dynamoDBOperations) {
 		super(tree, parameterAccessor);
 		this.entityMetadata = entityMetadata;
 		this.projection = projection;
 		this.limit = limitResults;
+		this.filterExpression = filterExpression;
 		this.consistentReads = consistentReads;
+		if(names != null) {
+			this.expressionAttributeNames = names.clone();
+		} else{
+			this.expressionAttributeNames = null;
+		}
+		if(values != null) {
+			this.expressionAttributeValues = values.clone();
+			for(ExpressionAttribute value: expressionAttributeValues) {
+				if(!StringUtils.isEmpty(value.parameterName())) {
+					for(Parameter p : ((ParametersParameterAccessor)parameterAccessor).getParameters()) {
+						if(p.getName().isPresent() && p.getName().get().equals(value.parameterName())) {
+							mappedExpressionValues.put(value.parameterName(), (String) parameterAccessor.getBindableValue(p.getIndex()));
+						}
+					}
+				}
+			}
+		} else {
+			this.expressionAttributeValues = null;
+		}
 		this.dynamoDBOperations = dynamoDBOperations;
 	}
 
@@ -75,8 +117,8 @@ public abstract class AbstractDynamoDBQueryCreator<T, ID, R>
 	protected DynamoDBQueryCriteria<T, ID> create(Part part, Iterator<Object> iterator) {
 		final DynamoDBMapperTableModel<T> tableModel = dynamoDBOperations.getTableModel(entityMetadata.getJavaType());
 		DynamoDBQueryCriteria<T, ID> criteria = entityMetadata.isRangeKeyAware()
-				? new DynamoDBEntityWithHashAndRangeKeyCriteria<T, ID>(
-						(DynamoDBIdIsHashAndRangeKeyEntityInformation<T, ID>) entityMetadata, tableModel)
+				? new DynamoDBEntityWithHashAndRangeKeyCriteria<>(
+				(DynamoDBIdIsHashAndRangeKeyEntityInformation<T, ID>) entityMetadata, tableModel)
 				: new DynamoDBEntityWithHashKeyOnlyCriteria<>(entityMetadata, tableModel);
 		return addCriteria(criteria, part, iterator);
 	}
@@ -90,7 +132,7 @@ public abstract class AbstractDynamoDBQueryCreator<T, ID, R>
 
 		PropertyPath leafNodePropertyPath = part.getProperty().getLeafProperty();
 		String leafNodePropertyName = leafNodePropertyPath.toDotPath();
-		if (leafNodePropertyName.indexOf(".") != -1) {
+		if (leafNodePropertyName.contains(".")) {
 			int index = leafNodePropertyName.lastIndexOf(".");
 			leafNodePropertyName = leafNodePropertyName.substring(index);
 		}

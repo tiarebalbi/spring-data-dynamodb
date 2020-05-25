@@ -38,19 +38,21 @@ public class PartTreeDynamoDBQuery<T, ID> extends AbstractDynamoDBQuery<T, ID> i
 	}
 
 	protected DynamoDBQueryCreator<T, ID> createQueryCreator(ParametersParameterAccessor accessor) {
-		return new DynamoDBQueryCreator<>(tree, accessor, getQueryMethod().getEntityInformation(),
-				getQueryMethod().getProjectionExpression(), getQueryMethod().getLimitResults(), getQueryMethod().getConsistentReadMode(), dynamoDBOperations);
+		DynamoDBQueryMethod<T, ID> queryMethod = getQueryMethod();
+		return new DynamoDBQueryCreator<>(tree, accessor, queryMethod.getEntityInformation(),
+				queryMethod.getProjectionExpression(), queryMethod.getLimitResults(), queryMethod.getConsistentReadMode(), queryMethod.getFilterExpression(),
+				queryMethod.getExpressionAttributeNames(), queryMethod.getExpressionAttributeValues(), dynamoDBOperations);
 	}
 
 	protected DynamoDBCountQueryCreator<T, ID> createCountQueryCreator(ParametersParameterAccessor accessor,
 			boolean pageQuery) {
-		return new DynamoDBCountQueryCreator<>(tree, accessor, getQueryMethod().getEntityInformation(),
-				dynamoDBOperations, pageQuery);
+		DynamoDBQueryMethod<T, ID> queryMethod = getQueryMethod();
+		return new DynamoDBCountQueryCreator<>(tree, accessor, queryMethod.getEntityInformation(), queryMethod.getFilterExpression(),
+				queryMethod.getExpressionAttributeNames(), queryMethod.getExpressionAttributeValues(), dynamoDBOperations, pageQuery);
 	}
 
 	@Override
 	public Query<T> doCreateQuery(Object[] values) {
-
 		ParametersParameterAccessor accessor = new ParametersParameterAccessor(parameters, values);
 		DynamoDBQueryCreator<T, ID> queryCreator = createQueryCreator(accessor);
 		return queryCreator.createQuery();
@@ -59,7 +61,6 @@ public class PartTreeDynamoDBQuery<T, ID> extends AbstractDynamoDBQuery<T, ID> i
 
 	@Override
 	public Query<Long> doCreateCountQuery(Object[] values, boolean pageQuery) {
-
 		ParametersParameterAccessor accessor = new ParametersParameterAccessor(parameters, values);
 		DynamoDBCountQueryCreator<T, ID> queryCreator = createCountQueryCreator(accessor, pageQuery);
 		return queryCreator.createQuery();

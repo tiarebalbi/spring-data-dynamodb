@@ -18,9 +18,11 @@ package org.socialsignin.spring.data.dynamodb.repository.query;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import org.socialsignin.spring.data.dynamodb.core.DynamoDBOperations;
 import org.socialsignin.spring.data.dynamodb.query.Query;
+import org.socialsignin.spring.data.dynamodb.repository.ExpressionAttribute;
 import org.socialsignin.spring.data.dynamodb.repository.QueryConstants;
 import org.springframework.data.domain.Sort;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -47,6 +49,14 @@ public interface DynamoDBQueryCriteria<T, ID> {
 	DynamoDBQueryCriteria<T, ID> withLimit(Optional<Integer> limit);
 
 	DynamoDBQueryCriteria<T, ID> withConsistentReads(QueryConstants.ConsistentReadMode reads);
+
+	DynamoDBQueryCriteria<T, ID> withFilterExpression(Optional<String> filterExpression);
+
+	DynamoDBQueryCriteria<T, ID> withExpressionAttributeNames(ExpressionAttribute[] names);
+
+	DynamoDBQueryCriteria<T, ID> withExpressionAttributeValues(ExpressionAttribute[] values);
+
+	DynamoDBQueryCriteria<T, ID> withMappedExpressionValues(Map<String, String> values);
 
 	Query<T> buildQuery(DynamoDBOperations dynamoDBOperations);
 
