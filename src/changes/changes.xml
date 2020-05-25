@@ -33,7 +33,7 @@
       <action dev="majusko" type="fix" issue="19" date="2020-05-24">
         Missing Local index projection settings
       </action>
-      <action dev="majusko" type="add"  issue="24" date="2020-05-24">
+      <action dev="phaser4" type="add"  issue="24" date="2020-05-24">
         Nested Repository Support
       </action>
     </release>
