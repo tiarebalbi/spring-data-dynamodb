@@ -18,6 +18,7 @@ package org.socialsignin.spring.data.dynamodb.repository.query;
 import org.socialsignin.spring.data.dynamodb.core.DynamoDBOperations;
 import org.socialsignin.spring.data.dynamodb.query.Query;
 import org.socialsignin.spring.data.dynamodb.query.StaticQuery;
+import org.socialsignin.spring.data.dynamodb.repository.ExpressionAttribute;
 import org.socialsignin.spring.data.dynamodb.repository.QueryConstants;
 import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBEntityInformation;
 import org.springframework.data.domain.Sort;
@@ -30,20 +31,24 @@ import java.util.Optional;
 public class DynamoDBQueryCreator<T, ID> extends AbstractDynamoDBQueryCreator<T, ID, T> {
 
 	public DynamoDBQueryCreator(PartTree tree, ParameterAccessor parameterAccessor,
-			DynamoDBEntityInformation<T, ID> entityMetadata, Optional<String> projection, Optional<Integer> limit, QueryConstants.ConsistentReadMode consistentReads,
-			DynamoDBOperations dynamoDBOperations) {
-		super(tree, parameterAccessor, entityMetadata, projection, limit, consistentReads, dynamoDBOperations);
+								DynamoDBEntityInformation<T, ID> entityMetadata, Optional<String> projection, Optional<Integer> limit, QueryConstants.ConsistentReadMode consistentReads,
+								Optional<String> filterExpression, ExpressionAttribute[] names, ExpressionAttribute[] values, DynamoDBOperations dynamoDBOperations) {
+		super(tree, parameterAccessor, entityMetadata, projection, limit, consistentReads, filterExpression, names, values, dynamoDBOperations);
 	}
 
 	@Override
 	protected Query<T> complete(@Nullable DynamoDBQueryCriteria<T, ID> criteria, Sort sort) {
 		if (criteria == null) {
-			return new StaticQuery<T>(null);
+			return new StaticQuery<>(null);
 		} else {
 			criteria.withSort(sort);
 			criteria.withProjection(projection);
 			criteria.withLimit(limit);
 			criteria.withConsistentReads(consistentReads);
+			criteria.withFilterExpression(filterExpression);
+			criteria.withExpressionAttributeNames(expressionAttributeNames);
+			criteria.withExpressionAttributeValues(expressionAttributeValues);
+			criteria.withMappedExpressionValues(mappedExpressionValues);
 			return criteria.buildQuery(dynamoDBOperations);
 		}
 	}

@@ -20,7 +20,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.boostchicken</groupId>
     <artifactId>spring-data-dynamodb</artifactId>
-    <version>5.2.4-SNAPSHOT</version>
+    <version>5.2.5-SNAPSHOT</version>
     <name>Spring Data DynamoDB</name>
     <inceptionYear>2018</inceptionYear>
 
@@ -32,13 +32,13 @@
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
 
     <properties>
-        <spring.version>5.2.0.RELEASE</spring.version>
-        <spring-data.version>2.2.2.RELEASE</spring-data.version>
+        <spring.version>5.2.3.RELEASE</spring.version>
+        <spring-data.version>2.3.0.RELEASE</spring-data.version>
 
         <hibernate-validator.version>6.1.0.Final</hibernate-validator.version>
         <aws-java-sdk.version>1.11.664</aws-java-sdk.version>
@@ -501,7 +501,7 @@
     <repositories>
         <repository>
             <id>spring-libs-snapshot</id>
-            <url>http://repo.springsource.org/libs-snapshot</url>
+            <url>https://repo.springsource.org/libs-snapshot</url>
         </repository>
         <repository>
             <id>dynamodb-local-oregon</id>
@@ -513,7 +513,7 @@
     <pluginRepositories>
         <pluginRepository>
             <id>com.springsource.repository.bundles.release</id>
-            <url>http://repository.springsource.com/maven/bundles/release</url>
+            <url>https://repository.springsource.com/maven/bundles/release</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>

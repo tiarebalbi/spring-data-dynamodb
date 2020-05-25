@@ -16,9 +16,11 @@
 package org.socialsignin.spring.data.dynamodb.domain.sample;
 
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
+import org.socialsignin.spring.data.dynamodb.repository.ExpressionAttribute;
 import org.socialsignin.spring.data.dynamodb.repository.Query;
 import org.socialsignin.spring.data.dynamodb.repository.QueryConstants;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.time.Instant;
 import java.util.List;
@@ -54,7 +56,14 @@ public interface UserRepository extends CrudRepository<User, String> {
 	@EnableScan
 	void deleteByIdAndName(String id, String name);
 
-	@Query(fields = "leaveDate", limit = 1)
+	@Query(fields = "leaveDate", limit = 1, filterExpression = "contains(#field, :value)",
+			expressionMappingNames = {@ExpressionAttribute(key = "#field", value = "name")},
+			expressionMappingValues = {@ExpressionAttribute(key=":value", parameterName = "projection")})
+	List<User> findByPostCode(@Param("postCode") String postCode, @Param("projection") String projection);
+
+	@Query(fields = "leaveDate", limit = 1, filterExpression = "contains(#field, :value)",
+			expressionMappingNames = {@ExpressionAttribute(key = "#field", value = "name")},
+			expressionMappingValues = {@ExpressionAttribute(key=":value", value = "projection")})
 	List<User> findByPostCode(String postCode);
 
 	@EnableScan

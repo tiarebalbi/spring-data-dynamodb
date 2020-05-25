@@ -17,6 +17,7 @@ package org.socialsignin.spring.data.dynamodb.repository.query;
 
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScanCount;
+import org.socialsignin.spring.data.dynamodb.repository.ExpressionAttribute;
 import org.socialsignin.spring.data.dynamodb.repository.Query;
 import org.socialsignin.spring.data.dynamodb.repository.QueryConstants;
 import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBEntityInformation;
@@ -42,7 +43,10 @@ public class DynamoDBQueryMethod<T, ID> extends QueryMethod {
 	private final boolean scanCountEnabledForRepository;
 	private final Optional<String> projectionExpression;
 	private final Optional<Integer> limitResults;
-	private QueryConstants.ConsistentReadMode consistentReadMode;
+	private final Optional<String> filterExpression;
+	private final ExpressionAttribute[] expressionAttributeNames;
+	private final ExpressionAttribute[] expressionAttributeValues;
+	private final QueryConstants.ConsistentReadMode consistentReadMode;
 
 	public DynamoDBQueryMethod(Method method, RepositoryMetadata metadata, ProjectionFactory factory) {
 		super(method, metadata, factory);
@@ -59,6 +63,14 @@ public class DynamoDBQueryMethod<T, ID> extends QueryMethod {
 			} else {
 				this.projectionExpression = Optional.empty();
 			}
+			String filterExp = query.filterExpression();
+			if(!StringUtils.isEmpty(filterExp)) {
+				this.filterExpression = Optional.of(filterExp);
+			} else {
+				this.filterExpression = Optional.empty();
+			}
+			this.expressionAttributeValues = query.expressionMappingValues();
+			this.expressionAttributeNames = query.expressionMappingNames();
 			int limit = query.limit();
 			if (limit != QUERY_LIMIT_UNLIMITED) {
 				this.limitResults = Optional.of(query.limit());
@@ -70,6 +82,9 @@ public class DynamoDBQueryMethod<T, ID> extends QueryMethod {
 			this.projectionExpression = Optional.empty();
 			this.limitResults = Optional.empty();
 			this.consistentReadMode = QueryConstants.ConsistentReadMode.DEFAULT;
+			this.filterExpression = Optional.empty();
+			this.expressionAttributeNames = null;
+			this.expressionAttributeValues = null;
 		}
 	}
 
@@ -118,5 +133,23 @@ public class DynamoDBQueryMethod<T, ID> extends QueryMethod {
 
 	public QueryConstants.ConsistentReadMode getConsistentReadMode() {
 		return this.consistentReadMode;
+	}
+
+	public Optional<String> getFilterExpression() {
+		return this.filterExpression;
+	}
+
+	public ExpressionAttribute[] getExpressionAttributeNames() {
+		if(expressionAttributeNames != null) {
+			return expressionAttributeNames.clone();
+		}
+		return null;
+	}
+
+	public ExpressionAttribute[] getExpressionAttributeValues() {
+		if(expressionAttributeValues != null) {
+			return expressionAttributeValues.clone();
+		}
+		return null;
 	}
 }

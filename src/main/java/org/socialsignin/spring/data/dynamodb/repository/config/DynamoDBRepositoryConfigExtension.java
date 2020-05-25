@@ -93,8 +93,8 @@ public class DynamoDBRepositoryConfigExtension extends RepositoryConfigurationEx
 		String repositoryBeanName = config.generateBeanName(builder.getBeanDefinition());
 
 		postProcess(builder, repositoryBeanName, attributes.getString("amazonDynamoDBRef"),
-				attributes.getString("dynamoDBMapperConfigRef"), attributes.getString("dynamoDBOperationsRef"),
-				attributes.getString("mappingContextRef"));
+				attributes.getString("dynamoDBMapperRef"), attributes.getString("dynamoDBMapperConfigRef"),
+				attributes.getString("dynamoDBOperationsRef"), attributes.getString("mappingContextRef"));
 	}
 
 	/*
@@ -129,7 +129,8 @@ public class DynamoDBRepositoryConfigExtension extends RepositoryConfigurationEx
 
 	private Map<String, String> dynamoDBTemplateCache = new HashMap<>();
 	private void postProcess(BeanDefinitionBuilder builder, String repositoryName, String amazonDynamoDBRef,
-			String dynamoDBMapperConfigRef, String dynamoDBOperationsRef, String dynamoDBMappingContextRef) {
+			String dynamoDBMapperRef, String dynamoDBMapperConfigRef, String dynamoDBOperationsRef,
+			String dynamoDBMappingContextRef) {
 
 		if (StringUtils.hasText(dynamoDBOperationsRef)) {
 			builder.addPropertyReference("dynamoDBOperations", dynamoDBOperationsRef);
@@ -155,7 +156,12 @@ public class DynamoDBRepositoryConfigExtension extends RepositoryConfigurationEx
 							// AmazonDynamoDB amazonDynamoDB, DynamoDBMapper dynamoDBMapper,
 							// DynamoDBMapperConfig dynamoDBMapperConfig
 							dynamoDBTemplateBuilder.addConstructorArgReference(dynamoDBRef);
-							dynamoDBTemplateBuilder.addConstructorArgReference(this.dynamoDBMapperName);
+
+							if (StringUtils.hasText(dynamoDBMapperRef)) {
+								dynamoDBTemplateBuilder.addConstructorArgReference(dynamoDBMapperRef);
+							} else {
+								dynamoDBTemplateBuilder.addConstructorArgReference(this.dynamoDBMapperName);
+							}
 
 							if (StringUtils.hasText(dynamoDBMapperConfigRef)) {
 								dynamoDBTemplateBuilder.addConstructorArgReference(dynamoDBMapperConfigRef);

@@ -57,7 +57,58 @@ public @interface Query {
 	 *      "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html">Read Consistency</a>
 	 * @see <a href=
 	 *      "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBMapper.OptionalConfig.html">DynamoDBMapper Configuration</a>
-	 * @return ConistentReadMode to enforce on query
+	 * @return ConsistentReadMode to enforce on query
 	 */
 	ConsistentReadMode consistentReads() default ConsistentReadMode.DEFAULT;
+
+	/**
+	 * Set filter expressions for a query
+	 *
+	 * @see <a href=
+	 * 		"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.html#Query.FilterExpression">Filter Expressions</a>
+	 * @see <a href=
+	 * 	 	"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.OperatorsAndFunctions.html"> Expression Syntax</a>
+	 *
+	 *
+	 * Example: {@code @Query(filterExpression = "contains(#field, :value)",
+	 * 	           				expressionMappingNames = {@ExpressionAttribute(key = "#field", value = "name")},
+	 * 							expressionMappingValues = {@ExpressionAttribute(key=":value", value = "John Doe")})}
+	 *
+	 * @return filter expression for query
+	 */
+	String filterExpression() default "";
+
+	/**
+	 * Set filter expressions for a query
+	 *
+	 * @see <a href=
+	 * 		"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.html#Query.FilterExpression">Filter Expressions</a>
+	 * @see <a href=
+	 * 	 	"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.OperatorsAndFunctions.html"> Expression Syntax</a>
+	 *
+	 *
+	 * Example: {@code @Query(filterExpression = "contains(#field, :value)",
+	 * 	           				expressionMappingNames = {@ExpressionAttribute(key = "#field", value = "name")},
+	 * 							expressionMappingValues = {@ExpressionAttribute(key=":value", value = "John Doe")})}
+	 *
+	 * @return expression name mappings for query
+	 */
+	ExpressionAttribute[] expressionMappingNames() default @ExpressionAttribute;
+
+	/**
+	 * Set filter expressions for a query
+	 *
+	 * @see <a href=
+	 * 		"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.html#Query.FilterExpression">Filter Expressions</a>
+	 * @see <a href=
+	 * 	 	"https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.OperatorsAndFunctions.html">Expression Syntax</a>
+	 *
+	 *
+	 * Example: {@code @Query(filterExpression = "contains(#field, :value)",
+	 * 	           				expressionMappingNames = {@ExpressionAttribute(key = "#field", value = "name")},
+	 * 							expressionMappingValues = {@ExpressionAttribute(key=":value", value = "John Doe")})}
+	 *
+	 * @return expression value mappings for query
+	 */
+	ExpressionAttribute[] expressionMappingValues() default @ExpressionAttribute;
 }

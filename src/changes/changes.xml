@@ -23,6 +23,20 @@
     <author>boostchicken</author>
   </properties>
   <body>
+    <release version="5.2.4" description="Feature Release">
+      <action dev="boostchicken" type="add" issue="29" date="2020-05-24">
+        Added Filter Expression Support
+      </action>
+      <action dev="felixwimpyw" type="fix" issue="25" date="2020-05-24">
+        Failed to register dynamoDBMapperRef
+      </action>
+      <action dev="majusko" type="fix" issue="19" date="2020-05-24">
+        Missing Local index projection settings
+      </action>
+      <action dev="phaser4" type="add"  issue="24" date="2020-05-24">
+        Nested Repository Support
+      </action>
+    </release>
     <release version="5.2.3" description="Security Release">
       <action dev="boostchicken" type="fix" issue="10" date="2020-02-24">
         Update Hibernate Validator to fix CVE

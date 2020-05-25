@@ -113,7 +113,7 @@ public class CRUDOperationsIT {
 		List<User> actualList = new ArrayList<>();
 		userRepository.findAll().forEach(actualList::add);
 
-		List<User> projectedActuals = userRepository.findByPostCode(postCode);
+		List<User> projectedActuals = userRepository.findByPostCode(postCode, "projection");
 		// 2 matches but should be limited to 1 by @Query
 		assertEquals(1, projectedActuals.size());
 		User projectedActual = projectedActuals.get(0);
@@ -122,6 +122,15 @@ public class CRUDOperationsIT {
 		assertNull("Attribute not projected", projectedActual.getNumberOfPlaylists());
 		assertNull("Key not projected", projectedActual.getId());
 		assertNotNull("LeaveDate is projected", projectedActual.getLeaveDate());
+
+		List<User> projectedActuals2 = userRepository.findByPostCode(postCode);
+		assertEquals(1, projectedActuals2.size());
+		User projectedActual2 = projectedActuals2.get(0);
+		assertNull("Attribute not projected", projectedActual2.getName());
+		assertNull("Attribute not projected", projectedActual2.getPostCode());
+		assertNull("Attribute not projected", projectedActual2.getNumberOfPlaylists());
+		assertNull("Key not projected", projectedActual2.getId());
+		assertNotNull("LeaveDate is projected", projectedActual2.getLeaveDate());
 
 		List<User> fullActuals = userRepository.findByNameIn(Arrays.asList(user1, user2, user3));
 		assertEquals(3, fullActuals.size());

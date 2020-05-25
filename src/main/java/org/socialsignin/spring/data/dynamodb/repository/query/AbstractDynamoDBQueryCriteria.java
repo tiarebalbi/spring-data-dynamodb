@@ -29,6 +29,7 @@ import org.socialsignin.spring.data.dynamodb.core.DynamoDBOperations;
 import org.socialsignin.spring.data.dynamodb.marshaller.Date2IsoDynamoDBMarshaller;
 import org.socialsignin.spring.data.dynamodb.marshaller.Instant2IsoDynamoDBMarshaller;
 import org.socialsignin.spring.data.dynamodb.query.Query;
+import org.socialsignin.spring.data.dynamodb.repository.ExpressionAttribute;
 import org.socialsignin.spring.data.dynamodb.repository.QueryConstants;
 import org.socialsignin.spring.data.dynamodb.repository.support.DynamoDBEntityInformation;
 import org.socialsignin.spring.data.dynamodb.utils.SortHandler;
@@ -40,11 +41,13 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -60,10 +63,10 @@ import java.util.Optional;
 public abstract class AbstractDynamoDBQueryCriteria<T, ID> implements DynamoDBQueryCriteria<T, ID>, SortHandler {
 
 	protected Class<T> clazz;
-	private DynamoDBEntityInformation<T, ID> entityInformation;
-	private Map<String, String> attributeNamesByPropertyName;
+	private final DynamoDBEntityInformation<T, ID> entityInformation;
+	private final Map<String, String> attributeNamesByPropertyName;
 	private final DynamoDBMapperTableModel<T> tableModel;
-	private String hashKeyPropertyName;
+	private final String hashKeyPropertyName;
 
 	protected MultiValueMap<String, Condition> attributeConditions;
 	protected MultiValueMap<String, Condition> propertyConditions;
@@ -74,6 +77,10 @@ public abstract class AbstractDynamoDBQueryCriteria<T, ID> implements DynamoDBQu
 	protected Sort sort = Sort.unsorted();
 	protected Optional<String> projection = Optional.empty();
 	protected Optional<Integer> limit = Optional.empty();
+	protected Optional<String> filterExpression = Optional.empty();
+	protected ExpressionAttribute[] expressionAttributeNames;
+	protected ExpressionAttribute[] expressionAttributeValues;
+	protected Map<String, String> mappedExpressionValues;
 	protected QueryConstants.ConsistentReadMode consistentReads = QueryConstants.ConsistentReadMode.DEFAULT;
 
 	public abstract boolean isApplicableForLoad();
@@ -91,8 +98,8 @@ public abstract class AbstractDynamoDBQueryCriteria<T, ID> implements DynamoDBQu
 			List<String> allowedSortProperties = new ArrayList<>();
 
 			for (Entry<String, List<Condition>> singlePropertyCondition : propertyConditions.entrySet()) {
-				if (entityInformation.getGlobalSecondaryIndexNamesByPropertyName().keySet()
-						.contains(singlePropertyCondition.getKey())) {
+				if (entityInformation.getGlobalSecondaryIndexNamesByPropertyName()
+						.containsKey(singlePropertyCondition.getKey())) {
 					allowedSortProperties.add(singlePropertyCondition.getKey());
 				}
 			}
@@ -135,23 +142,64 @@ public abstract class AbstractDynamoDBQueryCriteria<T, ID> implements DynamoDBQu
 				queryRequest.setSelect(Select.ALL_PROJECTED_ATTRIBUTES);
 			}
 
-			limit.ifPresent(queryRequest::setLimit);
-
-			switch (consistentReads) {
-				case CONSISTENT:
-					queryRequest.setConsistentRead(true);
-					break;
-				case EVENTUAL:
-					queryRequest.setConsistentRead(false);
-					break;
-				default:
-					break;
-			}
 			applySortIfSpecified(queryRequest, new ArrayList<>(new HashSet<>(allowedSortProperties)));
+		}
+
+		applyConsistentReads(queryRequest);
+
+		limit.ifPresent(queryRequest::setLimit);
+
+		if(filterExpression.isPresent()) {
+			String filter = filterExpression.get();
+			if(!StringUtils.isEmpty(filter)) {
+				queryRequest.setFilterExpression(filter);
+				if (expressionAttributeNames != null && expressionAttributeNames.length > 0) {
+					for (ExpressionAttribute attribute : expressionAttributeNames) {
+						if(!StringUtils.isEmpty(attribute.key()))
+							queryRequest.addExpressionAttributeNamesEntry(attribute.key(), attribute.value());
+					}
+				}
+				if (expressionAttributeValues != null && expressionAttributeValues.length > 0) {
+					for (ExpressionAttribute value : expressionAttributeValues) {
+						if (!StringUtils.isEmpty(value.key())) {
+							if (mappedExpressionValues.containsKey(value.parameterName())) {
+								queryRequest.addExpressionAttributeValuesEntry(value.key(), new AttributeValue(mappedExpressionValues.get(value.parameterName())));
+							} else {
+								queryRequest.addExpressionAttributeValuesEntry(value.key(), new AttributeValue(value.value()));
+							}
+						}
+					}
+				}
+			}
 		}
 		return queryRequest;
 	}
 
+	protected void applyConsistentReads(QueryRequest queryRequest) {
+		switch (consistentReads) {
+			case CONSISTENT:
+				queryRequest.setConsistentRead(true);
+				break;
+			case EVENTUAL:
+				queryRequest.setConsistentRead(false);
+				break;
+			default:
+				break;
+		}
+	}
+
+	protected void applyConsistentReads(DynamoDBQueryExpression<T> queryExpression) {
+		switch (consistentReads) {
+			case CONSISTENT:
+				queryExpression.setConsistentRead(true);
+				break;
+			case EVENTUAL:
+				queryExpression.setConsistentRead(false);
+				break;
+			default:
+				break;
+		}
+	}
 	protected void applySortIfSpecified(DynamoDBQueryExpression<T> queryExpression,
 			List<String> permittedPropertyNames) {
 		if (permittedPropertyNames.size() > 1) {
@@ -202,9 +250,8 @@ public abstract class AbstractDynamoDBQueryCriteria<T, ID> implements DynamoDBQu
 	}
 
 	public boolean comparisonOperatorsPermittedForQuery() {
-		List<ComparisonOperator> comparisonOperatorsPermittedForQuery = Arrays.asList(new ComparisonOperator[]{
-				ComparisonOperator.EQ, ComparisonOperator.LE, ComparisonOperator.LT, ComparisonOperator.GE,
-				ComparisonOperator.GT, ComparisonOperator.BEGINS_WITH, ComparisonOperator.BETWEEN});
+		List<ComparisonOperator> comparisonOperatorsPermittedForQuery = Arrays.asList(ComparisonOperator.EQ, ComparisonOperator.LE, ComparisonOperator.LT, ComparisonOperator.GE,
+				ComparisonOperator.GT, ComparisonOperator.BEGINS_WITH, ComparisonOperator.BETWEEN);
 
 		// Can only query on subset of Conditions
 		for (Collection<Condition> conditions : attributeConditions.values()) {
@@ -220,17 +267,13 @@ public abstract class AbstractDynamoDBQueryCriteria<T, ID> implements DynamoDBQu
 
 	protected List<Condition> getHashKeyConditions() {
 		List<Condition> hashKeyConditions = null;
-		if (isApplicableForGlobalSecondaryIndex() && entityInformation.getGlobalSecondaryIndexNamesByPropertyName()
-				.keySet().contains(getHashKeyPropertyName())) {
-			hashKeyConditions = getHashKeyAttributeValue() == null
-					? null
-					: Arrays.asList(createSingleValueCondition(getHashKeyPropertyName(), ComparisonOperator.EQ,
-							getHashKeyAttributeValue(), getHashKeyAttributeValue().getClass(), true));
-			if (hashKeyConditions == null) {
-				if (attributeConditions.containsKey(getHashKeyAttributeName())) {
-					hashKeyConditions = attributeConditions.get(getHashKeyAttributeName());
-				}
-
+		if (isApplicableForGlobalSecondaryIndex() && entityInformation.getGlobalSecondaryIndexNamesByPropertyName().containsKey(getHashKeyPropertyName())) {
+			if (getHashKeyAttributeValue() != null) {
+				hashKeyConditions = Collections.singletonList(createSingleValueCondition(getHashKeyPropertyName(), ComparisonOperator.EQ,
+						getHashKeyAttributeValue(), getHashKeyAttributeValue().getClass(), true));
+			}
+			if (hashKeyConditions == null && attributeConditions.containsKey(getHashKeyAttributeName())) {
+				hashKeyConditions = attributeConditions.get(getHashKeyAttributeName());
 			}
 
 		}
@@ -718,8 +761,34 @@ public abstract class AbstractDynamoDBQueryCriteria<T, ID> implements DynamoDBQu
 	}
 
 	@Override
+	public DynamoDBQueryCriteria<T, ID> withFilterExpression(Optional<String> filter) {
+		this.filterExpression = filter;
+		return this;
+	}
+
+	@Override
+	public DynamoDBQueryCriteria<T, ID> withExpressionAttributeNames(ExpressionAttribute[] names) {
+		if(names != null)
+			this.expressionAttributeNames = names.clone();
+		return this;
+	}
+
+	@Override
+	public DynamoDBQueryCriteria<T, ID> withExpressionAttributeValues(ExpressionAttribute[] values) {
+		if(values != null)
+			this.expressionAttributeValues = values.clone();
+		return this;
+	}
+
+	@Override
 	public DynamoDBQueryCriteria<T, ID> withConsistentReads(QueryConstants.ConsistentReadMode consistentReads) {
 		this.consistentReads = consistentReads;
+		return this;
+	}
+
+	@Override
+	public DynamoDBQueryCriteria<T, ID> withMappedExpressionValues(Map<String, String> map) {
+		this.mappedExpressionValues = map;
 		return this;
 	}
 }

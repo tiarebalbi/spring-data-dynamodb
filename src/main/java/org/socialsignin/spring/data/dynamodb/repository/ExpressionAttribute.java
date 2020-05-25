@@ -13,19 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.socialsignin.spring.data.dynamodb.domain.sample;
+package org.socialsignin.spring.data.dynamodb.repository;
 
-import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
-import org.socialsignin.spring.data.dynamodb.repository.Query;
-import org.socialsignin.spring.data.dynamodb.repository.QueryConstants;
-import org.springframework.data.repository.CrudRepository;
-
-import java.util.Optional;
-
-@EnableScan
-public interface PlaylistRepository extends CrudRepository<Playlist, PlaylistId> {
-
-    @Override
-    @Query(consistentReads = QueryConstants.ConsistentReadMode.EVENTUAL)
-    Optional<Playlist> findById(PlaylistId playlistId);
+public @interface ExpressionAttribute {
+    String key() default "";
+    String value() default "";
+    String parameterName() default "";
 }
