@@ -34,7 +34,7 @@ Download the JAR though [Maven Central](http://mvnrepository.com/artifact/io.git
 <dependency>
   <groupId>io.github.boostchicken</groupId>
   <artifactId>spring-data-dynamodb</artifactId>
-  <version>5.2.3</version>
+  <version>5.2.4</version>
 </dependency>
 ```
 
@@ -167,12 +167,12 @@ API changes will follow SEMVER and loosly the Spring Framework releases.
 | 4.5.x                           | >= 1.4.0 && < 2.0              | >= 4.3 && < 5.0                | Ingalls                   |
 | 5.0.x                           | >= 2.0 && < 2.1                | >= 5.0 && < 5.1                | Kay-SR1                   |
 | 5.1.x                           | == 2.1                         | >= 5.1                         | Lovelace-SR1              |
-| 5.2.x                           | >= 2.2                         | >= 5.2                         | Moore-RELEASE              |
+| 5.2.x                           | >= 2.2                         | >= 5.2                         | Moore-RELEASE, Nuemann-RELASE              |
 
 
 `spring-data-dynamodb` depends directly on `spring-data` as also `spring-context`, `spring-data` and `spring-tx`.
 
-`compile` and `runtime` dependencies are kept to a minimum to allow easy integartion, for example into 
+`compile` and `runtime` dependencies are kept to a minimum to allow easy integration, for example into 
 Spring-Boot projects.
 
 ## History
